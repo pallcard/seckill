@@ -24,9 +24,9 @@ public interface SeckillDao {
 
     /**
      * 根据偏移量查询秒杀列表
-     * @param offet
+     * @param offset
      * @param limit
      * @return
      */
-    List<Seckill> queryAll(int offet, int limit);
+    List<Seckill> queryAll(int offset, int limit);
 }
