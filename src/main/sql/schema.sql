@@ -1,8 +1,8 @@
---创建数据库脚本
+-- 创建数据库脚本
 CREATE  DATABASE seckill;
---使用数据库
+-- 使用数据库
 use seckill;
---创建秒杀库存表
+-- 创建秒杀库存表
 CREATE TABLE seckill(
   `seckill_id` bigint NOT NULL AUTO_INCREMENT COMMENT '商品库存id',
   `name` varchar (120) NOT NULL COMMENT '商品名称',
@@ -16,7 +16,7 @@ CREATE TABLE seckill(
   key idx_create_time(create_time)
 )ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8 COMMENT='秒杀库存表';
 
---初始化数据
+-- 初始化数据
 insert into
   seckill(name,number,start_time,end_time)
   values
@@ -25,8 +25,8 @@ insert into
     ('1元秒杀坚果3',100,'2018-06-01 00:00:00','2018-06-02 00:00:00'),
     ('1元秒杀mac',100,'2018-06-01 00:00:00','2018-06-02 00:00:00');
 
---秒杀成功明细表
---用户登录认证的相关的信息
+-- 秒杀成功明细表
+-- 用户登录认证的相关的信息
 CREATE TABLE success_killed(
   `seckill_id` bigint NOT NULL COMMENT '秒杀商品id',
   `user_phone` bigint NOT NULL COMMENT '用户手机号',

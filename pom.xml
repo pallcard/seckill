@@ -127,8 +127,6 @@
       <artifactId>spring-test</artifactId>
       <version>5.1.3.RELEASE</version>
     </dependency>
-
-
   </dependencies>
   <build>
     <finalName>seckill</finalName>
