@@ -1,6 +1,7 @@
 package cn.wishhust.dao;
 
 import cn.wishhust.entity.SuccessKilled;
+import org.apache.ibatis.annotations.Param;
 
 public interface SuccessKilledDao {
     /**
@@ -9,7 +10,7 @@ public interface SuccessKilledDao {
      * @param userPhone
      * @return 插入结果的数量
      */
-    int insertSuccessKilled(long seckillId, long userPhone);
+    int insertSuccessKilled(@Param("seckillId") long seckillId, @Param("userPhone") long userPhone);
 
     /**
      * 根据id查询SuccessKilled
@@ -17,5 +18,5 @@ public interface SuccessKilledDao {
      * @param userPhone
      * @return
      */
-    SuccessKilled queryByIdWithSeckill(long seckillId, long userPhone);
+    SuccessKilled queryByIdWithSeckill(@Param("seckillId")long seckillId,@Param("userPhone") long userPhone);
 }
