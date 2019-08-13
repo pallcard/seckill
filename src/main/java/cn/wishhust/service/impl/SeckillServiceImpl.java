@@ -83,7 +83,7 @@ public class SeckillServiceImpl implements SeckillService {
      */
     @Transactional
     public SeckillExecution executeSeckill(long seckillId, long userPhone, String md5) throws SeckillException, RepeatKillExecption, SeckillCloseException {
-        if (md5 == null || md5.equals(getMD5(seckillId))) {
+        if (md5 == null || !md5.equals(getMD5(seckillId))) {
             throw new SeckillException("seckill data rewrite");
         }
         try {
@@ -98,7 +98,6 @@ public class SeckillServiceImpl implements SeckillService {
                 } else {
                     final SuccessKilled successKilled = successKilledDao.queryByIdWithSeckill(seckillId, userPhone);
                     return new SeckillExecution(seckillId, SeckillStatEnum.SUCCESS,successKilled);
-
                 }
             }
         } catch (SeckillCloseException e1) {
