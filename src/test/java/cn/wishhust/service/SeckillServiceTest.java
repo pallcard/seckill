@@ -3,9 +3,8 @@ package cn.wishhust.service;
 import cn.wishhust.dto.Exposer;
 import cn.wishhust.dto.SeckillExecution;
 import cn.wishhust.entity.Seckill;
-import cn.wishhust.exception.RepeatKillExecption;
+import cn.wishhust.exception.RepeatKillException;
 import cn.wishhust.exception.SeckillCloseException;
-import jdk.internal.org.objectweb.asm.tree.TryCatchBlockNode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -15,8 +14,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({
@@ -58,7 +55,7 @@ public class SeckillServiceTest {
 //        try {
 //            final SeckillExecution seckillExecution = seckillService.executeSeckill(seckillId, 18162327111L, md5);
 //            logger.info("seckillExecution={}", seckillExecution);
-//        } catch (RepeatKillExecption e) {
+//        } catch (RepeatKillException e) {
 //            logger.error(e.getMessage());
 //        } catch (SeckillCloseException e) {
 //            logger.error(e.getMessage());
@@ -75,7 +72,7 @@ public class SeckillServiceTest {
             try {
                 final SeckillExecution seckillExecution = seckillService.executeSeckill(seckillId, 18162327111L, md5);
                 logger.info("seckillExecution={}", seckillExecution);
-            } catch (RepeatKillExecption e) {
+            } catch (RepeatKillException e) {
                 logger.error(e.getMessage());
             } catch (SeckillCloseException e) {
                 logger.error(e.getMessage());

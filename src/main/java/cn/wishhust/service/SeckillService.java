@@ -4,7 +4,7 @@ package cn.wishhust.service;
 import cn.wishhust.dto.Exposer;
 import cn.wishhust.dto.SeckillExecution;
 import cn.wishhust.entity.Seckill;
-import cn.wishhust.exception.RepeatKillExecption;
+import cn.wishhust.exception.RepeatKillException;
 import cn.wishhust.exception.SeckillCloseException;
 import cn.wishhust.exception.SeckillException;
 
@@ -42,5 +42,5 @@ public interface SeckillService {
      * @param md5
      */
     SeckillExecution executeSeckill(long seckillId, long userPhone, String md5)
-        throws SeckillException, RepeatKillExecption, SeckillCloseException;
+        throws SeckillException, RepeatKillException, SeckillCloseException;
 }

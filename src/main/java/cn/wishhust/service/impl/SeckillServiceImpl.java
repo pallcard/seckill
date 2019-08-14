@@ -7,7 +7,7 @@ import cn.wishhust.dto.SeckillExecution;
 import cn.wishhust.entity.Seckill;
 import cn.wishhust.entity.SuccessKilled;
 import cn.wishhust.enums.SeckillStatEnum;
-import cn.wishhust.exception.RepeatKillExecption;
+import cn.wishhust.exception.RepeatKillException;
 import cn.wishhust.exception.SeckillCloseException;
 import cn.wishhust.exception.SeckillException;
 import cn.wishhust.service.SeckillService;
@@ -78,11 +78,11 @@ public class SeckillServiceImpl implements SeckillService {
      * @param md5
      * @return
      * @throws SeckillException
-     * @throws RepeatKillExecption
+     * @throws RepeatKillException
      * @throws SeckillCloseException
      */
     @Transactional
-    public SeckillExecution executeSeckill(long seckillId, long userPhone, String md5) throws SeckillException, RepeatKillExecption, SeckillCloseException {
+    public SeckillExecution executeSeckill(long seckillId, long userPhone, String md5) throws SeckillException, RepeatKillException, SeckillCloseException {
         if (md5 == null || !md5.equals(getMD5(seckillId))) {
             throw new SeckillException("seckill data rewrite");
         }
@@ -94,7 +94,7 @@ public class SeckillServiceImpl implements SeckillService {
                 final int insertCount = successKilledDao.insertSuccessKilled(seckillId, userPhone);
                 if (insertCount <= 0) {
                     // 重复秒杀
-                    throw new RepeatKillExecption("seckill repeated");
+                    throw new RepeatKillException("seckill repeated");
                 } else {
                     final SuccessKilled successKilled = successKilledDao.queryByIdWithSeckill(seckillId, userPhone);
                     return new SeckillExecution(seckillId, SeckillStatEnum.SUCCESS,successKilled);
@@ -102,7 +102,7 @@ public class SeckillServiceImpl implements SeckillService {
             }
         } catch (SeckillCloseException e1) {
             throw e1;
-        } catch (RepeatKillExecption e2) {
+        } catch (RepeatKillException e2) {
             throw e2;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
