@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
-@RequestMapping("/seckill")
+@RequestMapping(value = "/seckill")
 public class SeckillController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -28,7 +28,7 @@ public class SeckillController {
     @Autowired
     private SeckillService seckillService;
 
-    @RequestMapping(name = "/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
     public String list(Model model) {
         List<Seckill> list = seckillService.getSeckillList();
         model.addAttribute("list", list);
