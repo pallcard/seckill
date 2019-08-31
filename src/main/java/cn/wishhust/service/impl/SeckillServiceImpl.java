@@ -98,18 +98,40 @@ public class SeckillServiceImpl implements SeckillService {
         if (md5 == null || !md5.equals(getMD5(seckillId))) {
             throw new SeckillException("seckill data rewrite");
         }
+        // 执行秒杀逻辑，减库存 + 记录购买行为
         try {
-            final int updateCount = seckillDao.reduceNumber(seckillId, new Date());
-            if (updateCount <= 0) {
-                throw new SeckillCloseException("seckill is closed");
+//            final int updateCount = seckillDao.reduceNumber(seckillId, new Date());
+//            if (updateCount <= 0) {
+//                // 没有更新到记录，秒杀结束
+//                throw new SeckillCloseException("seckill is closed");
+//            } else {
+//                // 记录购买行为
+//                final int insertCount = successKilledDao.insertSuccessKilled(seckillId, userPhone);
+//                if (insertCount <= 0) {
+//                    // 重复秒杀
+//                    throw new RepeatKillException("seckill repeated");
+//                } else {
+//                    // 秒杀成功
+//                    final SuccessKilled successKilled = successKilledDao.queryByIdWithSeckill(seckillId, userPhone);
+//                    return new SeckillExecution(seckillId, SeckillStatEnum.SUCCESS,successKilled);
+//                }
+//            }
+            // 记录购买行为
+            final int insertCount = successKilledDao.insertSuccessKilled(seckillId, userPhone);
+            if (insertCount <= 0) {
+                // 重复秒杀
+                throw new RepeatKillException("seckill repeated");
             } else {
-                final int insertCount = successKilledDao.insertSuccessKilled(seckillId, userPhone);
-                if (insertCount <= 0) {
-                    // 重复秒杀
-                    throw new RepeatKillException("seckill repeated");
+                // 减少库存，热点商品竞争
+                final int updateCount = seckillDao.reduceNumber(seckillId, new Date());
+                if (updateCount <= 0) {
+                    // 没有更新到记录，秒杀结束，rollback
+                    throw new SeckillCloseException("seckill is closed");
                 } else {
+                    // 秒杀成功，commit
                     final SuccessKilled successKilled = successKilledDao.queryByIdWithSeckill(seckillId, userPhone);
                     return new SeckillExecution(seckillId, SeckillStatEnum.SUCCESS,successKilled);
+
                 }
             }
         } catch (SeckillCloseException e1) {
