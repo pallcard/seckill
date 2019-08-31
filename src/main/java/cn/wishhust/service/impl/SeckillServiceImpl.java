@@ -2,6 +2,7 @@ package cn.wishhust.service.impl;
 
 import cn.wishhust.dao.SeckillDao;
 import cn.wishhust.dao.SuccessKilledDao;
+import cn.wishhust.dao.cache.RedisDao;
 import cn.wishhust.dto.Exposer;
 import cn.wishhust.dto.SeckillExecution;
 import cn.wishhust.entity.Seckill;
@@ -30,6 +31,9 @@ public class SeckillServiceImpl implements SeckillService {
     private SeckillDao seckillDao;
 
     @Autowired
+    private RedisDao redisDao;
+
+    @Autowired
     private SuccessKilledDao successKilledDao;
 
     // md5盐值，用于混淆md5
@@ -44,12 +48,18 @@ public class SeckillServiceImpl implements SeckillService {
     }
 
     public Exposer exportSeckillUrl(long seckillId) {
-        // 优化点：缓存优化
-
-        final Seckill seckill = seckillDao.queryById(seckillId);
-        if (null == seckill) {
-            return new Exposer(false, seckillId);
+        // 优化点：缓存优化,超时基础上维护一致性
+        // 1.访问redis
+        Seckill seckill = redisDao.getSeckill(seckillId);
+        if (seckill == null) {
+            seckill = seckillDao.queryById(seckillId);
+            if (null == seckill) {
+                return new Exposer(false, seckillId);
+            } else {
+                redisDao.putSeckill(seckill);
+            }
         }
+
         Date startTime = seckill.getStartTime();
         Date endTime = seckill.getEndTime();
         Date nowTime = new Date();
