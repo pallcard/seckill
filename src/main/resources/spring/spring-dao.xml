@@ -38,4 +38,11 @@
         <property name="basePackage" value="cn.wishhust.dao"/>
     </bean>
 
+    <bean id="redisDao" class="cn.wishhust.dao.cache.RedisDao">
+        <constructor-arg name="host" value="203.195.238.249"/>
+        <constructor-arg name="port" value="6379"/>
+        <constructor-arg name="timeout" value="3000"/>
+        <constructor-arg name="password" value="lk123456"/>
+    </bean>
+
 </beans>

@@ -44,6 +44,8 @@ public class SeckillServiceImpl implements SeckillService {
     }
 
     public Exposer exportSeckillUrl(long seckillId) {
+        // 优化点：缓存优化
+
         final Seckill seckill = seckillDao.queryById(seckillId);
         if (null == seckill) {
             return new Exposer(false, seckillId);
