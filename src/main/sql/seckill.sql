@@ -13,7 +13,7 @@ CREATE PROCEDURE  `seckill`.`execute_seckill`
     START TRANSACTION;
     insert ignore into success_killed
       (seckill_id,user_phone,create_time)
-      values (v_seckill_id,v_phone,v_kill_time)
+      values (v_seckill_id,v_phone,v_kill_time);
     select row_count () into insert_count;
     IF (insert_count = 0) THEN
       ROLLBACK ;
@@ -29,7 +29,7 @@ CREATE PROCEDURE  `seckill`.`execute_seckill`
         and start_time < v_kill_time
         and number > 0;
       select row_count() into insert_count;
-      IF(insert_count == 0)THEN
+      IF(insert_count = 0)THEN
         ROLLBACK;
         set r_result = 0;
       ELSEIF(insert_count < 0)THEN

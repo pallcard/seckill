@@ -32,7 +32,7 @@
         #{seckillId, jdbcType=BIGINT,mode=IN},
         #{phone, jdbcType=BIGINT,mode=IN},
         #{killTime, jdbcType=TIMESTAMP,mode=IN},
-        #{result, jdbcType=BIGINT,mode=OUT},
+        #{result, jdbcType=BIGINT,mode=OUT}
         )
     </select>
 
