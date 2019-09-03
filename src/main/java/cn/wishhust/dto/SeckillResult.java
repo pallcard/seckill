@@ -1,6 +1,14 @@
 package cn.wishhust.dto;
 
 // 封装json
+
+/**
+ * 一个VO类(View Object)，属于DTO层，用来封装json结果，方便页面取值；在这里，将其设计成泛型，就可以和灵活地往里边封装各种类型的对象。
+ *
+ * 这里的success属性不是指秒杀执行的结果，而是指页面是否发送请求成功，至于秒杀之后是否成功的这个结果则是封装到了data属性里。
+ *
+ * @param <T>
+ */
 public class SeckillResult<T> {
     private boolean success;
 
