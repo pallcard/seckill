@@ -40,7 +40,7 @@ public class SeckillServiceImpl implements SeckillService {
     private SuccessKilledDao successKilledDao;
 
     // md5盐值，用于混淆md5
-    private final String slat = "";
+    private final String slat = "fgdgfdg^*(&^*lknkdsnadfl^(&^&9&";
 
     public List<Seckill> getSeckillList() {
         return seckillDao.queryAll(0,4);
@@ -53,6 +53,7 @@ public class SeckillServiceImpl implements SeckillService {
     public Exposer exportSeckillUrl(long seckillId) {
         // 优化点：缓存优化,超时基础上维护一致性
         // 1.访问redis
+        // 查找秒杀产品
         Seckill seckill = redisDao.getSeckill(seckillId);
         if (seckill == null) {
             seckill = seckillDao.queryById(seckillId);
@@ -63,15 +64,17 @@ public class SeckillServiceImpl implements SeckillService {
             }
         }
 
+        // 秒杀产品是否开启秒杀
         Date startTime = seckill.getStartTime();
         Date endTime = seckill.getEndTime();
         Date nowTime = new Date();
-
         if (nowTime.getTime() < startTime.getTime()
                 || nowTime.getTime() > endTime.getTime()) {
-            return new Exposer(false, seckillId,nowTime.getTime(),
-                    startTime.getTime(),endTime.getTime());
+            return new Exposer(false, seckillId, nowTime.getTime(),
+                    startTime.getTime(), endTime.getTime());
         }
+
+        // 秒杀开启，返回秒杀商品的id、用给接口加密的md5
         String md5 = getMD5(seckillId);
         return new Exposer(true, md5, seckillId);
     }
@@ -88,6 +91,12 @@ public class SeckillServiceImpl implements SeckillService {
      * 2. 保证事务方法的执行时间尽可能短，不要穿插其他网络操作RPC/HTTP请求或者剥离到事务外部
      * 3. 不是所有的方法都需要事务，如果只有一条修改操作，只读操作不需要事务控制
      *
+     *
+     * 注解@Transactional的方式，注解可以在方法定义、接口定义、类定义、public方法上，但是不能注解在private、final、static等方法上，因为Spring的事务管理默认是使用Cglib动态代理的：
+     * private方法因为访问权限限制，无法被子类覆盖
+     * final方法无法被子类覆盖
+     * static是类级别的方法，无法被子类覆盖
+     * protected方法可以被子类覆盖，因此可以被动态字节码增强
      * @param seckillId
      * @param userPhone
      * @param md5
@@ -134,7 +143,6 @@ public class SeckillServiceImpl implements SeckillService {
                     // 秒杀成功，commit
                     final SuccessKilled successKilled = successKilledDao.queryByIdWithSeckill(seckillId, userPhone);
                     return new SeckillExecution(seckillId, SeckillStatEnum.SUCCESS,successKilled);
-
                 }
             }
         } catch (SeckillCloseException e1) {
@@ -143,6 +151,11 @@ public class SeckillServiceImpl implements SeckillService {
             throw e2;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            // Java异常分编译期异常和运行期异常，运行期异常不需要手工try-catch，Spring的的声明式事务只接收运行期异常回滚策略，非运行期异常不会帮我们回滚。
+            // 编译时异常： 程序正确，但因为外在的环境条件不满足引发。
+            // 运行期异常： 这意味着程序存在bug，如数组越界，0被除, 这类异常需要更改程序来避免，Java编译器强制要求处理这类异常。
+            // 编译器只是进行语法的分析，分析出来的错误也只是语法上的错误，而运行期在真正在分配内存
+            // Spring的事务默认是发生了RuntimeException才会回滚，发生了其他异常不会回滚
             throw new SeckillException("seckill inner error:" + e.getMessage());
         }
     }

@@ -3,6 +3,10 @@ package cn.wishhust.dto;
 import cn.wishhust.entity.SuccessKilled;
 import cn.wishhust.enums.SeckillStatEnum;
 
+/**
+ * 用于封装秒杀是否成功的结果（该对象用来返回给页面）
+ */
+
 public class SeckillExecution {
     private long seckillId;
 

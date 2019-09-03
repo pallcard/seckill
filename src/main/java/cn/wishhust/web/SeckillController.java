@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 
+// Service层中的抛出异常是为了让Spring能够回滚，Controller层中捕获异常是为了将异常转换为对应的Json供前台使用，缺一不可。
 @Controller
 @RequestMapping(value = "/seckill")
 public class SeckillController {
@@ -65,8 +66,7 @@ public class SeckillController {
         try{
             Exposer exposer = seckillService.exportSeckillUrl(seckillId);
             result = new SeckillResult<Exposer>(true, exposer);
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             result = new SeckillResult<Exposer>(false, e.getMessage());
         }
@@ -80,6 +80,7 @@ public class SeckillController {
     @ResponseBody
     public SeckillResult<SeckillExecution> execute(@PathVariable("seckillId") Long seckillId,
                                                    @PathVariable("md5") String md5,
+                                                   // SpringMVC在处理Cookie时有个小问题：如果找不到对应的Cookie会报错，所以设置为required=false，将Cookie是否存在的逻辑判断放到代码中来判断。
                                                    @CookieValue(value = "killPhone", required = false) Long userPhone)
     {
         if (userPhone==null)

@@ -1,5 +1,9 @@
 package cn.wishhust.enums;
 
+/**
+ *
+ * 使用枚举类将常量枚举类封装起来，方便重复利用，也易于维护。
+ */
 public enum SeckillStatEnum {
     SUCCESS(1,"秒杀成功"),
     END(0, "秒杀结束"),
